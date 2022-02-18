@@ -22,18 +22,18 @@ def readbody(lonx, laty):
     if containgCity is not None:
         urbanized = True
         #rspstring += " Point ({}, {}) is within the city of \"{}\" (population of {}).".format(lonxf, latyf, containgCity.name, containgCity.population) + "\n"
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"" + str(containgCity.name) + "\",\"population\": \"" + str(containgCity.population) + "\",\"error\": \"none\","
-        rspstring += "\"orig longitude\": \"" + str(lonxf) + "\", \"orig latitude\": \"" + str(latyf) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(lonxf) + "," + str(latyf) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":containgCity.name,"population": containgCity.population,"error": "none","orig longitude": lonxf, "orig latitude": latyf}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(lonxf) +','+ str(latyf) +'] } }'
+
     else:
         urbanized = False
         #rspstring += " Point ({}, {}) is not within any urban area.".format(lonxf, latyf) + "\n"
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"none\","
-        rspstring += "\"orig longitude\": \"" + str(lonxf) + "\", \"orig latitude\": \"" + str(latyf) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(lonxf) + "," + str(latyf) + "] } }"
-
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "none","orig longitude": lonxf, "orig latitude": latyf}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(lonxf) +','+ str(latyf) +'] } }'
+    
+    #return value
     return rspstring
 
 #Read URL query
@@ -53,17 +53,18 @@ def urlQuery(lonx, laty):
     if containgCity is not None:
         urbanized = True
         #rspstring += " Point ({}, {}) is within the city of \"{}\" (population of {}).".format(longitudef, latitudef, containgCity.name, containgCity.population) + "\n"
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"" + str(containgCity.name) + "\",\"population\": \"" + str(containgCity.population) + "\",\"error\": \"none\","
-        rspstring += "\"orig longitude\": \"" + str(longitudef) + "\", \"orig latitude\": \"" + str(latitudef) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longitudef) + "," + str(latitudef) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":containgCity.name,"population": containgCity.population,"error": "none","orig longitude": longitudef, "orig latitude": latitudef}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longitudef) +','+ str(latitudef) +'] } }'
+    
     else:
         urbanized = False
         #rspstring += " Point ({}, {}) is not within any urban area.".format(longitudef, latitudef) + "\n"
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"none\","
-        rspstring += "\"orig longitude\": \"" + str(longitudef) + "\", \"orig latitude\": \"" + str(latitudef) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longitudef) + "," + str(latitudef) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "none","orig longitude": longitudef, "orig latitude": latitudef}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longitudef) +','+ str(latitudef) +'] } }'
+    
+    #return value
     return rspstring
 
 #Handles errors with the inputs
@@ -77,26 +78,25 @@ def geoErrors(lonerror, laterror, hasError):
     #Edit return message based on error
     if (hasError == "string"):
         #run error handling for strings
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"Latitude and Longitude need to be an valid number.\","
-        rspstring += "\"orig longitude\": \"" + str(lonerror) + "\", \"orig latitude\": \"" + str(laterror) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longhold) + "," + str(lathold) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Latitude and Longitude need to be an valid number.","orig longitude": lonerror, "orig latitude": laterror}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
+
         print("String Error")
 
     elif (hasError == "longitude"):
         #run error handling if longitude is out of range
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"Longitude is out of range.\","
-        rspstring += "\"orig longitude\": \"" + str(lonerror) + "\", \"orig latitude\": \"" + str(laterror) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longhold) + "," + str(lathold) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Longitude is out of range.","orig longitude": lonerror, "orig latitude": laterror}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
+
         print("Longitude Error")
 
     elif (hasError == "latitude"):
         #run error handling if latitude is out of range
-        rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"Latitude is out of range.\","
-        rspstring += "\"orig longitude\": \"" + str(lonerror) + "\", \"orig latitude\": \"" + str(laterror) + "\"},\n"
-        rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longhold) + "," + str(lathold) + "] } }"
+        rspstring += '\n\t{"type": "Feature","properties":'
+        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Latitude is out of range.","orig longitude": lonerror, "orig latitude": laterror}
+        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
         print("Latitude Error")
 
     return rspstring

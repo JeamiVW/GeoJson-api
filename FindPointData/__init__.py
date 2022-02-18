@@ -4,7 +4,6 @@ import string
 from urllib import request
 # from xmlrpc.client import boolean
 import azure.functions as func
-#import json
 
 from .geographyUtils import isWithinUrbanArea
 from .responseUtils import inputErrors, readbody
