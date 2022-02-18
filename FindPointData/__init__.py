@@ -17,6 +17,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # Attempt to grab params from URL query
     longitude = req.params.get('x')
     latitude = req.params.get('y')
+    lonm = None
+    latm = None
 
     #Variables
     payload = []
@@ -79,7 +81,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             message = urlQuery(longitude, latitude)
 
     # Alert user if args were not given
-    if not (longitude and latitude):
+    if not ((longitude and latitude) or (lonm and latm)):
         return func.HttpResponse(
             "Please give a set of points as x (longitude) and y (latitude).",
             status_code=400

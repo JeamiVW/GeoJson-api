@@ -54,14 +54,14 @@ def urlQuery(lonx, laty):
         urbanized = True
         #rspstring += " Point ({}, {}) is within the city of \"{}\" (population of {}).".format(longitudef, latitudef, containgCity.name, containgCity.population) + "\n"
         rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"" + str(containgCity.name) + "\",\"population\": \"" + str(containgCity.population) + "\",\"error\": \"none\""
+        rspstring += "\"location\":\"" + str(containgCity.name) + "\",\"population\": \"" + str(containgCity.population) + "\",\"error\": \"none\","
         rspstring += "\"orig longitude\": \"" + str(longitudef) + "\", \"orig latitude\": \"" + str(latitudef) + "\"},\n"
         rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longitudef) + "," + str(latitudef) + "] } }"
     else:
         urbanized = False
         #rspstring += " Point ({}, {}) is not within any urban area.".format(longitudef, latitudef) + "\n"
         rspstring += "\n\t{\"type\": \"Feature\", \n\t\t\"properties\":{\"urbanize\":\"" + str(urbanized) + "\","
-        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"none\""
+        rspstring += "\"location\":\"N/A\",\"population\": \"N/A\",\"error\": \"none\","
         rspstring += "\"orig longitude\": \"" + str(longitudef) + "\", \"orig latitude\": \"" + str(latitudef) + "\"},\n"
         rspstring += "\t\t\"geometry\":{ \"type\":\"Point\",\"coordinates\": [" + str(longitudef) + "," + str(latitudef) + "] } }"
     return rspstring
@@ -73,9 +73,6 @@ def geoErrors(lonerror, laterror, hasError):
     urbanized = False
     longhold = 0.00
     lathold = 0.00
-    # lontype = str(type(lonerror))
-    # lattype = str(type(laterror))
-
 
     #Edit return message based on error
     if (hasError == "string"):
@@ -106,7 +103,6 @@ def geoErrors(lonerror, laterror, hasError):
 
 #Test if there are errors in the longitude or latitude
 def inputErrors(lonm, latm):
-    print("long: \"" + str(type(lonm)) + "\" lat: \"" + str(type(latm)) + "\"")
     #try to cast lat and lon as float and Error: sets errorstr = "string"
     try:
         lonmf = float(lonm)
