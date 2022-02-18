@@ -79,8 +79,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             message = urlQuery(longitude, latitude)
 
     # Alert user if args were not given
-    if not ((latitude and latitude) or (lonm and latm)):
-        #print('Else statement outside of try: ' + str(lonm) + ' ' + str(latm))
+    if not (longitude and latitude):
         return func.HttpResponse(
             "Please give a set of points as x (longitude) and y (latitude).",
             status_code=400
