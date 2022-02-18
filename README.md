@@ -1,3 +1,4 @@
+# GeoJson-api
 The intention of this program is to read from a GEOJSON file and take JSON inputs to see if the given point(s)
     fall within an urbanized area (Fall within one of the given polygons from GEOJSON file data.geosjson). The output of the 
     program generates GEOJSON code that can be run through geojson.io to plot points.
@@ -36,13 +37,13 @@ Explaination of functions:
     # -75.91376224438353, 42.07139539374084 (Random Binghamton)
     # -73.02105606055635, 40.76718728206796
     # -78.90088203001112, 35.99620904561505
-#Test Points no within an Urbanized Area
+#Test Points not within an Urbanized Area
     # -74.65047087616452, 44.543362328416606
 #Test Points with errors
-    # -74.65047f087616452, 44.543362328416606
-    # -74.65047087616452, 44.5433623f28416606
-    # -7222224.65047087616452, 44.543362328416606
-    # -74.65047087616452, 4004.543362328416606
+    # -74.65047f087616452, 44.543362328416606 (string)
+    # -74.65047087616452, 44.5433623f28416606 (string)
+    # -7222224.65047087616452, 44.543362328416606 (Longitude out of range)
+    # -74.65047087616452, 4004.543362328416606 (Latitude out of range)
 
 #TEST DATA JSON FORMAT
 [
