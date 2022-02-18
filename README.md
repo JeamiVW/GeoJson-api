@@ -1,9 +1,9 @@
 # GeoJson-api
-##Task:
+## Task:
   Build a basic API which accepts latitude/longitude parameter and returns a value indicating whether the given point is in an urbanized area.
     The API accepts an Http POST request with a JSON payload of latitude and longitude. It should return True if the given point is in an urbanized 
     area, and false otherwise.
-##Submission:
+## Submission:
   This API accepts Http POST requests with multiple points or a single point as well as Http GET requests. With a JSON payload of latitude and longitude this api returns GEOJSON data for the given point in the below format. 
     {
   "type": "FeatureCollection",
