@@ -132,6 +132,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
     # Return response payload
     return func.HttpResponse(
-            json.dumps(result),
+            json.dumps(result, indent=4),
             status_code=200
         )

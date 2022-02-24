@@ -15,8 +15,9 @@ def getCitiesFromFile():
     #data[] = array of data.features
   for city in data['features']:
     cityName = city['properties']['location']
-      #take the city item at element "properties" and get value 
+      #take the city item at element "properties" and get properties.location value 
     cityPopulation = city['properties']['population']
+      ##take the city item at element "properties" and get properties.popultion value 
 
     cityPolygon = []
     tempPolygon = city['geometry']['coordinates'][0]
