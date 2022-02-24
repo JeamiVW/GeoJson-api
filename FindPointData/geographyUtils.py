@@ -12,8 +12,10 @@ def getCitiesFromFile():
   data = load(open(dir_path + '/' + 'data.geojson', 'r'))
 
   # Constructs list of Cities
+    #data[] = array of data.features
   for city in data['features']:
     cityName = city['properties']['location']
+      #take the city item at element "properties" and get value 
     cityPopulation = city['properties']['population']
 
     cityPolygon = []

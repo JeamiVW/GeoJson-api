@@ -1,9 +1,12 @@
 import logging
 from multiprocessing.sharedctypes import Value
+from pickletools import read_bytes1
+from re import X
 import string
 from urllib import request
 # from xmlrpc.client import boolean
 import azure.functions as func
+import json
 
 from .geographyUtils import isWithinUrbanArea
 from .responseUtils import inputErrors, readbody
@@ -22,7 +25,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     #Variables
     payload = []
     message = ""
-    geomsg = ""
+    result = {
+        "type": "FeatureCollection",
+        "features": []
+    }
 
     #process if args are not in URL query
     #check if args are in the body as raw data
@@ -48,11 +54,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
                 if ((hasError == "string") or (hasError == "longitude") or (hasError == "latitude")):
                     #pass to error handling
-                    message += geoErrors(lonm, latm, hasError)
+                    rCity = geoErrors(lonm, latm, hasError)
 
                 else:
                     #Run points through readbodydef
-                    message += readbody(lonm, latm)
+                    rCity = readbody(lonm, latm)
 
                 #if there are more points in payload[], add ","
                 if payloadpt == payloadlen:
@@ -62,6 +68,25 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
                 #Increase payloadpt
                 payloadpt += 1
+
+                #Add the city obj to result dict
+                result["features"].append(
+                    {
+                        "type": "Feature",
+                        "properties": {
+                        "urbanized": rCity.urbanized,
+                        "location": rCity.name,
+                        "population": rCity.population,
+                        "error": rCity.error,
+                        "orig longitude": rCity.originalLon,
+                        "orig latitude": rCity.originalLat
+                        },
+                        "geometry": {
+                        "type": "Point",
+                        "coordinates": [ rCity.x, rCity.y ]
+                        }
+                    }
+                )
 
         except ValueError:
             pass
@@ -73,11 +98,30 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
 
         if ((hasError == "string") or (hasError == "longitude") or (hasError == "latitude")):
             #pass to error handling
-            message += geoErrors(longitude, latitude, hasError)
+            rCity = geoErrors(longitude, latitude, hasError)
 
         else:
             #Run points through readbodydef
-            message = urlQuery(longitude, latitude)
+            rCity = urlQuery(longitude, latitude)
+
+        #append result
+        result["features"].append(
+                    {
+                        "type": "Feature",
+                        "properties": {
+                        "urbanized": rCity.urbanized,
+                        "location": rCity.name,
+                        "population": rCity.population,
+                        "error": rCity.error,
+                        "orig longitude": rCity.originalLon,
+                        "orig latitude": rCity.originalLat
+                        },
+                        "geometry": {
+                        "type": "Point",
+                        "coordinates": [ rCity.x, rCity.y ]
+                        }
+                    }
+                )
 
     # Alert user if args were not given
     if not ((longitude and latitude) or (lonm and latm)):
@@ -86,13 +130,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             status_code=400
         )
 
-    #format GEOJSON
-    geomsg = "{\"type\": \"FeatureCollection\",\n\t" + "\"features\" : ["
-        #add the response\
-    geomsg += message + "\n\t]\n}"
-
     # Return response payload
     return func.HttpResponse(
-            geomsg,
+            json.dumps(result),
             status_code=200
         )

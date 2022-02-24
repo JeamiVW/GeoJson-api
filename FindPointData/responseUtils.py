@@ -1,7 +1,9 @@
 import json
+from unittest import result
 from .geographyUtils import isWithinUrbanArea
 import azure.functions as func
 import string
+from .jsonObj import JsonCity
 
 #Put data from the body into an array and test each point
     #Append the message string to show output for each point
@@ -21,20 +23,13 @@ def readbody(lonx, laty):
     #pull out information from response
     if containgCity is not None:
         urbanized = True
-        #rspstring += " Point ({}, {}) is within the city of \"{}\" (population of {}).".format(lonxf, latyf, containgCity.name, containgCity.population) + "\n"
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":containgCity.name,"population": containgCity.population,"error": "none","orig longitude": lonxf, "orig latitude": latyf}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(lonxf) +','+ str(latyf) +'] } }'
-
+        jCity = JsonCity(urbanized, containgCity.name, containgCity.population, "none", lonxf, latyf, lonxf, latyf)
     else:
         urbanized = False
-        #rspstring += " Point ({}, {}) is not within any urban area.".format(lonxf, latyf) + "\n"
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "none","orig longitude": lonxf, "orig latitude": latyf}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(lonxf) +','+ str(latyf) +'] } }'
+        jCity = JsonCity(urbanized, "N/A", "N/A", "none", lonxf, latyf, lonxf, latyf)
     
     #return value
-    return rspstring
+    return jCity
 
 #Read URL query
 def urlQuery(lonx, laty):
@@ -52,20 +47,14 @@ def urlQuery(lonx, laty):
     #pull out information from response
     if containgCity is not None:
         urbanized = True
-        #rspstring += " Point ({}, {}) is within the city of \"{}\" (population of {}).".format(longitudef, latitudef, containgCity.name, containgCity.population) + "\n"
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":containgCity.name,"population": containgCity.population,"error": "none","orig longitude": longitudef, "orig latitude": latitudef}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longitudef) +','+ str(latitudef) +'] } }'
+        jCity = JsonCity(urbanized, containgCity.name, containgCity.population, "none", longitudef, latitudef, longitudef, latitudef)
     
     else:
         urbanized = False
-        #rspstring += " Point ({}, {}) is not within any urban area.".format(longitudef, latitudef) + "\n"
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "none","orig longitude": longitudef, "orig latitude": latitudef}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longitudef) +','+ str(latitudef) +'] } }'
+        jCity = JsonCity(urbanized, "N/A", "N/A", "none", longitudef, latitudef, longitudef, latitudef)
     
     #return value
-    return rspstring
+    return jCity
 
 #Handles errors with the inputs
 def geoErrors(lonerror, laterror, hasError):
@@ -74,32 +63,26 @@ def geoErrors(lonerror, laterror, hasError):
     urbanized = False
     longhold = 0.00
     lathold = 0.00
+    
 
     #Edit return message based on error
     if (hasError == "string"):
         #run error handling for strings
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Latitude and Longitude need to be an valid number.","orig longitude": lonerror, "orig latitude": laterror}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
-
+        jCity = JsonCity(urbanized, "N/A", "N/A", "Latitude and Longitude need to be an valid number.", lonerror, laterror, longhold, lathold)
         print("String Error")
 
     elif (hasError == "longitude"):
         #run error handling if longitude is out of range
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Longitude is out of range.","orig longitude": lonerror, "orig latitude": laterror}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
-
+        jCity = JsonCity(urbanized, "N/A", "N/A", "Longitude is out of range.", lonerror, laterror, longhold, lathold)
         print("Longitude Error")
 
     elif (hasError == "latitude"):
         #run error handling if latitude is out of range
-        rspstring += '\n\t{"type": "Feature","properties":'
-        location = {"urbanize":urbanized,"location":"N/A","population": "N/A","error": "Latitude is out of range.","orig longitude": lonerror, "orig latitude": laterror}
-        rspstring += json.dumps(location) + ',\n\t\t"geometry": { "type":"Point","coordinates": ['+ str(longhold) +','+ str(lathold) +'] } }'
+        jCity = JsonCity(urbanized, "N/A", "N/A", "Latitude is out of range.", lonerror, laterror, longhold, lathold)
         print("Latitude Error")
 
-    return rspstring
+    # return rspstring
+    return jCity
 
 #Test if there are errors in the longitude or latitude
 def inputErrors(lonm, latm):
